@@ -12,15 +12,20 @@
 
 <body>
     <textarea id="txtISO" wrap="soft"></textarea>
-    <button id="btnDecode" onclick="decodeTxtISO()">Decode</button>
-    <table>
-        <tr>
-            <td>Name</td><td>Value</td>
-        </tr>
-        <tr><td>Header</td><td id="dHdr"></td></tr>
-        <tr><td>MTI</td><td id="dMTI"></td></tr>
-        <tr><td>Bitmap</td><td id="dBmp"></td></tr>
-    </table>
+    <button id="btnDecode" onclick="go_decode_txtISO()">Decode</button>
+    <div id="DecodedHeader">
+        <h2>
+            Header: <span id="dHdr"></span>
+        </h2>
+        <h2>
+            MTI: <span id="dMTI"></span>
+        </h2>
+        <h2>
+            Bitmap: <span id="dBmp"></span>
+        </h2>
+    </div>
+    <div id="DecodedFields">
+    </div>
 </body>
 
 </html>

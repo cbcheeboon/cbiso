@@ -310,11 +310,32 @@ function fill_ffs_ascii(ffs) {
 	ffs.szAscii = ascii;
 }
 
-function setOutField(id, val) {
-	document.getElementById(id).innerText = val;
+function show_result(szHdr, szMTI, szBmp, fields) {
+	var i = 0, ele = null, eleHost = null;
+	var $Fields = document.getElementById("DecodedFields");
+	$Fields.innerHTML = "";
+	for (i = 0; i < fields.length; ++i) {
+		eleHost = document.createElement("div");
+		eleHost.className = "DecodedField";
+		ele = document.createElement("h1");
+		ele.innerText = "Field " + fields[i].which;
+		eleHost.append(ele);
+		ele = document.createElement("h2");
+		ele.innerText = "Value: " + fields[i].value;
+		eleHost.append(ele);
+		if (fields[i].ascii !== null) {
+			ele = document.createElement("h2");
+			ele.innerText = "ASCII: " + fields[i].ascii;
+			eleHost.append(ele);
+		}
+		$Fields.append(eleHost);
+	}
+	document.getElementById("dHdr").innerText = szHdr;
+	document.getElementById("dMTI").innerText = szMTI;
+	document.getElementById("dBmp").innerText = szBmp;
 }
 
-function decodeTxtISO() {
+function go_decode_txtISO() {
 	var szRaw = document.getElementById("txtISO").value
 		.replace(/[ \t\r\n]+/g, "");
 	var cbBmp = 64 / BIT_COUNT;
@@ -323,8 +344,5 @@ function decodeTxtISO() {
 	var szBmp = szRaw.substr(14, cbBmp * 2);
 	var fields = decode_bitmap_for_fields(szBmp, cbBmp);
 	fill_fields_from_dump(fields, szRaw.substr(14 + cbBmp * 2));
-	console.log(fields);
-	setOutField("dHdr", szHdr);
-	setOutField("dMTI", szMTI);
-	setOutField("dBmp", szBmp);
+	show_result(szHdr, szMTI, szBmp, fields);
 }
