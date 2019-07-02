@@ -286,12 +286,12 @@ function fill_ffs_val(count, ffs) {
 		count += 1;
 	}
 	ffs.szVal = ffs.szDump.substr(0, count);
-	if (isOdd) {
+	/*if (isOdd) {
 		// CardBiz pad zero at left
 		// mean "123" is encoded as "0123"
 		// so we decode "0123" as "123"
 		ffs.szVal = ffs.szVal.substr(1);
-	}
+	}*/
 	ffs.szDump = ffs.szDump.substr(count);
 }
 
@@ -310,8 +310,23 @@ function fill_ffs_ascii(ffs) {
 	ffs.szAscii = ascii;
 }
 
+/**
+ * @param {number} which  one-based index of field
+ * @returns {string}  return hint text or null
+ */
+function get_field_hint(which) {
+	return which == 4 ? "Txn Amount" :
+		which == 11 ? "STAN" :
+		which == 35 ? "Track 2" :
+		which == 37 ? "RRN" :
+		which == 38 ? "APPR" :
+		which == 39 ? "Response Code" :
+		null;
+}
+
 function show_result(szHdr, szMTI, szBmp, fields) {
 	var i = 0, ele = null, eleHost = null;
+	var fieldHint = null;
 	var $Fields = document.getElementById("DecodedFields");
 	$Fields.innerHTML = "";
 	for (i = 0; i < fields.length; ++i) {
@@ -319,7 +334,16 @@ function show_result(szHdr, szMTI, szBmp, fields) {
 		eleHost.className = "DecodedField";
 		ele = document.createElement("h1");
 		ele.innerText = "Field " + fields[i].which;
+		fieldHint = get_field_hint(fields[i].which);
+		if (fieldHint !== null) {
+			ele.innerText += " (" + fieldHint + ")";
+		}
 		eleHost.append(ele);
+		if (fields[i].len !== null) {
+			ele = document.createElement("h2");
+			ele.innerText = "Length: " + fields[i].len;
+			eleHost.append(ele);
+		}
 		ele = document.createElement("h2");
 		ele.innerText = "Value: " + fields[i].value;
 		eleHost.append(ele);
@@ -345,4 +369,5 @@ function go_decode_txtISO() {
 	var fields = decode_bitmap_for_fields(szBmp, cbBmp);
 	fill_fields_from_dump(fields, szRaw.substr(14 + cbBmp * 2));
 	show_result(szHdr, szMTI, szBmp, fields);
+	console.log(fields);
 }
